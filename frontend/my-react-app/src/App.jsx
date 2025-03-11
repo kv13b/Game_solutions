@@ -5,6 +5,7 @@ import ClientMaster from "./Components/Masters/ClientMaster";
 import ProductMaster from "./Components/Masters/ProductMaster";
 import Sales from "./Components/Transactions/Sales";
 import Dashboard from "./Components/Dashboard";
+import Receipt from "./Components/Transactions/Receipt";
 function App() {
   return (
     <BrowserRouter>
@@ -15,6 +16,7 @@ function App() {
         <Route path="/Product" element={<ProductMaster />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Sales" element={<Sales />} />
+        <Route path="/Receipt" element={<Receipt />} />
       </Routes>
     </BrowserRouter>
   );
