@@ -8,7 +8,7 @@ app.use(express.json()); //middleware
 
 app.use(cors());
 app.use("/auth", routes);
-app.use("/master", masterroute);
+app.use("/client", masterroute);
 const PORT = 3003;
 app.listen(PORT, async () => {
   console.log(`server started at ${PORT}`);
