@@ -22,6 +22,7 @@ const ClientMaster = () => {
   const [editFlag, setEditFlag] = useState(false);
   const [rowData, setRowData] = useState([]);
   const [FormData, setFormData] = useState({
+    Customer_Id: "",
     Name: "",
     Address: "",
     ContactNo: "",
@@ -37,10 +38,18 @@ const ClientMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form refresh
     try {
-      const response = await axiosinstance.post("client/master", FormData);
-
+      let response;
+      if (editFlag) {
+        response = await axiosinstance.put("client/updatemaster", FormData);
+      } else {
+        response = await axiosinstance.post("client/master", FormData);
+      }
       if (response.status === 200) {
-        toast.success("Client insertion successful");
+        toast.success(
+          editFlag
+            ? "Client updated successfully"
+            : "Client insertion successful"
+        );
         fetchClients();
         setFormData({
           Customer_Id: "",
@@ -50,6 +59,9 @@ const ClientMaster = () => {
           Email: "",
           UserId: "",
         });
+        if (editFlag) {
+          setEditFlag(false);
+        }
       } else {
         toast.error(response.data.message);
       }
@@ -98,6 +110,7 @@ const ClientMaster = () => {
   const handleRowClick = (event) => {
     const rowData = event.data;
     setFormData({
+      Customer_Id: rowData.Customer_Id,
       Name: rowData.Name,
       Address: rowData.Address,
       ContactNo: rowData.ContactNo,
@@ -227,6 +240,7 @@ const ClientMaster = () => {
                       class="form-control"
                       name="ContactNo"
                       placeholder="Contact No"
+                      maxLength="10"
                       value={FormData.ContactNo}
                       onChange={handleChange}
                       required
