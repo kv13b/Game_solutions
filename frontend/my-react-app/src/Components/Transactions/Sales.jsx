@@ -36,7 +36,7 @@ const Sales = () => {
       }
     } catch (error) {
       console.error("Error:", error.message);
-      toast("Error inserting client data");
+      toast("Error inserting  sales transaction");
     }
   };
   return (
@@ -112,7 +112,7 @@ const Sales = () => {
                       <label htmlFor="inputState" className="form-label">
                          
                       </label>
-                      <div style={{ textAlign: "right" }}>
+                      <div >
                         <button
                           type="button"
                           className="btn btn-outline-warning"
@@ -126,7 +126,7 @@ const Sales = () => {
                       <label htmlFor="inputState" className="form-label">
                          
                       </label>
-                      <div style={{ textAlign: "right" }}>
+                      <div>
                         <button type="button" className="btn btn-outline-info">
                           View
                         </button>

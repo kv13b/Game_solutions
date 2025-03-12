@@ -120,6 +120,18 @@ const ClientMaster = () => {
     setEditFlag(true);
   };
 
+  const handleReset = (event) => {
+    setFormData({
+      Customer_Id: '',
+      Name: '',
+      Address: '',
+      ContactNo: '',
+      Email: '',
+      UserId: '',
+    });
+    setEditFlag(false);
+  }
+
   // const contains = (target, lookingFor) => {
   //   return target && target.indexOf(lookingFor) >= 0;
   // };
@@ -173,7 +185,7 @@ const ClientMaster = () => {
       field: "Address",
       sortable: true,
       filter: true,
-      width: 390,
+      width: 250,
     },
   ]);
 
@@ -246,7 +258,7 @@ const ClientMaster = () => {
                       required
                     />
                   </div>
-                  <div class="col-3">
+                  <div class="col-2">
                     <input
                       type="text"
                       class="form-control"
@@ -259,9 +271,11 @@ const ClientMaster = () => {
                   </div>
                   <div class="col-1">
                     <button type="submit" class="btn btn-outline-success">
-                      Submit
+                      ADD
                     </button>
-                    {/* <button type="reset" class="btn btn-secondary">Reset</button> */}
+                  </div>
+                  <div class="col-1">
+                    <button type="reset" class="btn btn-outline-secondary" onClick={handleReset}>Reset</button>
                   </div>
                 </form>
               </div>
@@ -283,9 +297,8 @@ const ClientMaster = () => {
       </main>
       <a
         href="#"
-        className={`back-to-top d-flex align-items-center justify-content-center ${
-          isVisible ? "active" : ""
-        }`}
+        className={`back-to-top d-flex align-items-center justify-content-center ${isVisible ? "active" : ""
+          }`}
         onClick={(e) => {
           e.preventDefault(); // Prevent default anchor behavior
           window.scrollTo({ top: 0, behavior: "smooth" });
