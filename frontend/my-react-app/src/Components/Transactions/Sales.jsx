@@ -1,43 +1,123 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosinstance from "../../utils/axiosinstance";
 import { ToastContainer, toast } from "react-toastify";
 import NavBar from "../NavBar";
+import { AgGridReact } from "ag-grid-react";
+import {
+  ClientSideRowModelModule,
+  ModuleRegistry,
+  TextFilterModule,
+  ValidationModule,
+  createGrid,
+} from "ag-grid-community";
 
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  TextFilterModule,
+  ValidationModule /* Development Only */,
+]);
 const Sales = () => {
-  const [FormData, setFormData] = useState({
-    Name: "",
-    Address: "",
-    ContactNo: "",
+  const [formData, setFormData] = useState({
     Email: "",
-    UserId: "", // remove this from input
+    ContactNo: "",
   });
+  const [clients, setClients] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [productData, setProductData] = useState({
+    product: "",
+    checkIn: "",
+    checkOut: "",
+    quantity: "",
+    rate: "",
+    amount: "",
+  });
+  const [products, setProducts] = useState([]);
+  const fetchClients = async () => {
+    try {
+      const response = await axiosinstance.get("client");
+      if (response.status === 200 && response.data.Valid) {
+        setClients(response.data.data);
+        console.log(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching client data:", error);
+    }
+  };
+  const handleCustomerChange = (e) => {
+    const custid = e.target.value;
+    setSelectedCustomer(e.target.value);
+    const selectedClient = clients.find(
+      (client) => client.Customer_Id.toString() === custid
+    );
+    if (selectedClient) {
+      setFormData({
+        Email: selectedClient.Email,
+        ContactNo: selectedClient.ContactNo,
+      });
+    }
+  };
+  const handleSubmit = () => {};
+  useEffect(() => {
+    fetchClients();
+  }, []);
   const handleChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
     }));
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent form refresh
-    try {
-      const response = await axiosinstance.post("master/client", FormData);
+  const handleProductChange = (e) => {
+    setProductData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
 
-      if (response.status === 200) {
-        toast("Client insertion successful");
-        setFormData({
-          Name: "",
-          Address: "",
-          ContactNo: "",
-          Email: "",
-          UserId: "",
-        });
-      } else {
-        toast(response.data.message);
+      const { product, checkIn, checkOut, quantity, rate, amount } =
+        productData;
+
+      if (!product || !checkIn || !checkOut || !quantity || !rate || !amount) {
+        alert("Please fill all product fields");
+        return;
       }
-    } catch (error) {
-      console.error("Error:", error.message);
-      toast("Error inserting  sales transaction");
+
+      // Add new row to grid
+      setProducts((prev) => [
+        ...prev,
+        { product, checkIn, checkOut, quantity, rate, amount },
+      ]);
+
+      // Clear product form after adding
+      setProductData({
+        product: "",
+        checkIn: "",
+        checkOut: "",
+        quantity: "",
+        rate: "",
+        amount: "",
+      });
     }
+  };
+  const columnDefs = [
+    { headerName: "Product", field: "product" },
+    { headerName: "Check In", field: "checkIn" },
+    { headerName: "Check Out", field: "checkOut" },
+    { headerName: "Quantity", field: "quantity" },
+    { headerName: "Rate", field: "rate" },
+    { headerName: "Amount", field: "amount" },
+  ];
+  const gridOptions = {
+    onGridReady: (params) => {
+      // Automatically adjust the columns when the grid is ready
+      params.api.sizeColumnsToFit();
+      params.api.getAllColumns().forEach((column) => {
+        column.getColDef().autoSize = true;
+      });
+      params.api.autoSizeColumns(params.columnApi.getAllColumns());
+    },
   };
   return (
     <div className="container">
@@ -67,12 +147,21 @@ const Sales = () => {
                       <label for="inputState" class="form-label">
                         Customer
                       </label>
-                      <select id="inputState" class="form-select">
-                        <option value="0" selected>
-                          Select
-                        </option>
-                        <option value="1">ABC</option>
-                        <option value="2">XYZ</option>
+                      <select
+                        id="inputState"
+                        className="form-select"
+                        value={selectedCustomer}
+                        onChange={handleCustomerChange}
+                      >
+                        <option value="">Select</option>
+                        {clients.map((client) => (
+                          <option
+                            key={client.Customer_Id}
+                            value={client.Customer_Id}
+                          >
+                            {client.Name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div class="col-md-3">
@@ -80,10 +169,13 @@ const Sales = () => {
                         Email
                       </label>
                       <input
-                        type="text"
-                        class="form-control"
-                        value="shailu580@gmail.com"
-                        disabled
+                        type="email"
+                        className="form-control"
+                        name="Email"
+                        placeholder="Email"
+                        value={formData.Email}
+                        onChange={handleChange}
+                        readOnly
                       />
                     </div>
                     <div class="col-md-2">
@@ -92,9 +184,13 @@ const Sales = () => {
                       </label>
                       <input
                         type="text"
-                        class="form-control"
-                        value="9060837081"
-                        disabled
+                        className="form-control"
+                        name="ContactNo"
+                        placeholder="Contact No"
+                        value={formData.ContactNo}
+                        onChange={handleChange}
+                        required
+                        readOnly
                       />
                     </div>
                     <div class="col-md-2">
@@ -112,7 +208,7 @@ const Sales = () => {
                       <label htmlFor="inputState" className="form-label">
                          
                       </label>
-                      <div >
+                      <div>
                         <button
                           type="button"
                           className="btn btn-outline-warning"
@@ -139,38 +235,55 @@ const Sales = () => {
                       <label for="inputNanme4" class="form-label">
                         Product
                       </label>
-                      <select id="inputState" class="form-select">
-                        <option value="0" selected>
-                          Select
-                        </option>
-                        <option value="1">Pool 1</option>
-                        <option value="2">Pool 1</option>
-                        <option value="2">Play Station 1</option>
-                        <option value="2">Play Station 1</option>
-                        <option value="2">Juice</option>
-                        <option value="2">Burger</option>
+                      <select
+                        id="inputState"
+                        className="form-select"
+                        name="product"
+                        value={productData.product}
+                        onChange={handleProductChange}
+                      >
+                        <option value="">Select</option>
+                        <option value="Pool 1">Pool 1</option>
+                        <option value="Pool 2">Pool 2</option>
+                        <option value="Play Station 1">Play Station 1</option>
+                        <option value="Juice">Juice</option>
+                        <option value="Burger">Burger</option>
                       </select>
                     </div>
                     <div class="col-2">
                       <label for="inputTime" class="form-label">
                         Check In
                       </label>
-                      <input type="time" class="form-control" />
+                      <input
+                        type="time"
+                        className="form-control"
+                        name="checkIn"
+                        value={productData.checkIn}
+                        onChange={handleProductChange}
+                      />
                     </div>
                     <div class="col-2">
                       <label for="inputTime" class="form-label">
                         Check Out
                       </label>
-                      <input type="time" class="form-control" />
+                      <input
+                        type="time"
+                        className="form-control"
+                        name="checkOut"
+                        value={productData.checkOut}
+                        onChange={handleProductChange}
+                      />
                     </div>
                     <div class="col-2">
                       <label for="inputNanme4" class="form-label">
                         Quantity
                       </label>
                       <input
-                        type="text"
-                        class="form-control"
-                        id="inputNanme4"
+                        type="number"
+                        className="form-control"
+                        name="quantity"
+                        value={productData.quantity}
+                        onChange={handleProductChange}
                       />
                     </div>
                     <div class="col-2">
@@ -178,9 +291,11 @@ const Sales = () => {
                         Rate
                       </label>
                       <input
-                        type="text"
-                        class="form-control"
-                        id="inputNanme4"
+                        type="number"
+                        className="form-control"
+                        name="rate"
+                        value={productData.rate}
+                        onChange={handleProductChange}
                       />
                     </div>
                     <div class="col-2">
@@ -188,10 +303,22 @@ const Sales = () => {
                         Amount
                       </label>
                       <input
-                        type="text"
-                        class="form-control"
-                        id="inputNanme4"
+                        type="number"
+                        className="form-control"
+                        name="amount"
+                        value={productData.amount}
+                        onChange={handleProductChange}
+                        onKeyDown={handleKeyDown}
                       />
+                    </div>
+                    <div>
+                      {/* <AgGridReact
+                        rowData={products}
+                        columnDefs={columnDefs}
+                        gridOptions={gridOptions}
+                        // onRowDoubleClicked={handleRowClick}
+                        modules={[ClientSideRowModelModule]}
+                      /> */}
                     </div>
                   </div>
 

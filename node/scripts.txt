@@ -19,3 +19,37 @@ CREATE TABLE `client_master` (
   `recordstatus` bigint DEFAULT NULL,
   PRIMARY KEY (`Customer_Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `product_master` (
+  `Item_Id` bigint NOT NULL AUTO_INCREMENT,
+  `Name` varchar(150) DEFAULT NULL,
+  `UserId` int NOT NULL,
+  `Entry_Date` datetime NOT NULL,
+  `recordstatus` bigint DEFAULT NULL,
+  `CategoryId` int DEFAULT NULL,
+  PRIMARY KEY (`Item_Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `tb_se_item_wait` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Main_Id` int DEFAULT NULL,
+  `Item_Id` int DEFAULT NULL,
+  `Quantity` double DEFAULT NULL,
+  `Rate` double DEFAULT NULL,
+  `Amount` double DEFAULT NULL,
+  `CheckIn` varchar(45) DEFAULT NULL,
+  `CheckOut` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `tb_se_item` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Main_Id` int DEFAULT NULL,
+  `Item_Id` int DEFAULT NULL,
+  `Quantity` double DEFAULT NULL,
+  `Rate` double DEFAULT NULL,
+  `Amount` double DEFAULT NULL,
+  `CheckIn` varchar(45) DEFAULT NULL,
+  `CheckOut` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
