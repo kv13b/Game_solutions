@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axiosinstance from "../utils/axiosinstance";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 const SignIn = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -10,7 +10,7 @@ const SignIn = () => {
   const [OTP, setOTP] = useState("");
   const [Password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const GetCode = async (e) => {
     e.preventDefault();
@@ -57,17 +57,21 @@ const SignIn = () => {
   };
 
   const SignIn = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     try {
       const response = await axiosinstance.post("auth/Login", {
         Email: Email,
-        Password: Password,
+        Password: Password
       });
       if (response.data.Valid) {
         toast.success(response.data.message);
+        sessionStorage.setItem("UserId", response.data.UserId);
+        sessionStorage.setItem("UserName", response.data.Name)
+        console.log(sessionStorage.getItem("UserId"));
+        console.log(sessionStorage.getItem("UserName"));
         setEmail("");
-        setPassword("");
-        navigate("/home");
+        setPassword("");  
+        navigate('/home', { replace: true });
       } else {
         toast.error(response.data.message);
         setPassword("");
@@ -83,7 +87,7 @@ const SignIn = () => {
         <ToastContainer />
         <div className="row justify-content-center">
           {isSignIn ? (
-            <div className="col-lg-8 col-md-6 d-flex flex-column align-items-center justify-content-center"> 
+            <div className="col-lg-8 col-md-6 d-flex flex-column align-items-center justify-content-center">
               <div className="card mb-3">
                 <div className="row g-0">
                   <div className="col-md-6">
@@ -153,11 +157,11 @@ const SignIn = () => {
                       </form>
                     </div>
                   </div>
-                </div> 
+                </div>
               </div>
               <div className="credits">
                 <p className="small mb-0">Don't have an account? <a href="#" onClick={() => setIsSignIn(false)} >Create an account</a></p>
-              </div> 
+              </div>
             </div>
 
           ) : isForgotPassword ? (

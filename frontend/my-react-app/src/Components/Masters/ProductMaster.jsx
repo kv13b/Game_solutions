@@ -26,7 +26,7 @@ const ProductMaster = () => {
     Name: "",
     Rate: "",
     CategoryId: 0,
-    UserId: "", // remove this from input
+    UserId: sessionStorage.getItem("UserId"), // remove this from input
   });
   const handleChange = (e) => {
     setFormData((prevData) => ({
@@ -59,7 +59,7 @@ const ProductMaster = () => {
           Name: "",
           Rate: "",
           CategoryId: "",
-          UserId: "",
+          UserId: sessionStorage.getItem("UserId"),
         });
         if (editFlag) {
           setEditFlag(false);

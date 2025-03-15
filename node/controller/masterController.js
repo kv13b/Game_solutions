@@ -9,14 +9,14 @@ const Clientinsert = async (req, res) => {
   }
 
   // Extract fields from request body
-  const { Name, Address, ContactNo, Email } = req.body;
+  const { Name, Address, ContactNo, Email,UserId } = req.body;
 
   try {
     // Insert client data into database
     const [result] = await pool.query(
-      `INSERT INTO client_master (Name, Address, ContactNo, Email, UserId, Entry_Date, recordstatus) 
-       VALUES (?, ?, ?, ?, 1, NOW(), 1)`,
-      [Name, Address, ContactNo, Email]
+      `INSERT INTO client_master (Name, Address, ContactNo, Email, UserId, Entry_Date, recordstatus,CategoryId) 
+       VALUES (?, ?, ?, ?, ?, NOW(), 1,1)`,
+      [Name, Address, ContactNo, Email,UserId],
     );
     if (result.affectedRows > 0) {
       console.log("Client insertion successful");

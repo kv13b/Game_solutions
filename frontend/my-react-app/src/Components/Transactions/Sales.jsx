@@ -23,15 +23,20 @@ const Sales = () => {
   });
   const [clients, setClients] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [productData, setProductData] = useState({
-    product: "",
-    checkIn: "",
-    checkOut: "",
-    quantity: "",
-    rate: "",
-    amount: "",
-  });
+
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState("");
+
+  // const [productData, setProductData] = useState({
+  //   product: "",
+  //   checkIn: "",
+  //   checkOut: "",
+  //   quantity: "",
+  //   rate: "",
+  //   amount: "",
+  // });
+ 
+
   const fetchClients = async () => {
     try {
       const response = await axiosinstance.get("client");
@@ -56,9 +61,35 @@ const Sales = () => {
       });
     }
   };
-  const handleSubmit = () => {};
+
+  const handleProductChange = (e) => {
+    const itemid = e.target.value;
+    setSelectedProduct(e.target.value);
+    const selectedProduct = products.find(
+      (product) => product.Item_Id.toString() === itemid
+    );
+    if (selectedProduct) {
+      setFormData({
+        Rate: selectedProduct.Rate, 
+      });
+    }
+  };
+
+  const fetchProduct = async () => {
+    try {
+      const response = await axiosinstance.get("product/getProduct");
+      if (response.status === 200 && response.data.Valid) {
+        setProducts(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching Product data:", error);
+    }
+  };
+
+  const handleSubmit = () => { };
   useEffect(() => {
     fetchClients();
+    fetchProduct();
   }, []);
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -66,12 +97,7 @@ const Sales = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  const handleProductChange = (e) => {
-    setProductData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -206,7 +232,7 @@ const Sales = () => {
                     </div>
                     <div class="col-md-1">
                       <label htmlFor="inputState" className="form-label">
-                         
+
                       </label>
                       <div>
                         <button
@@ -220,7 +246,7 @@ const Sales = () => {
                     </div>
                     <div class="col-md-1">
                       <label htmlFor="inputState" className="form-label">
-                         
+
                       </label>
                       <div>
                         <button type="button" className="btn btn-outline-info">
@@ -235,7 +261,7 @@ const Sales = () => {
                       <label for="inputNanme4" class="form-label">
                         Product
                       </label>
-                      <select
+                      {/* <select
                         id="inputState"
                         className="form-select"
                         name="product"
@@ -248,6 +274,23 @@ const Sales = () => {
                         <option value="Play Station 1">Play Station 1</option>
                         <option value="Juice">Juice</option>
                         <option value="Burger">Burger</option>
+                      </select> */}
+
+                      <select
+                        id="inputState"
+                        className="form-select"
+                        value={selectedProduct}
+                        onChange={handleProductChange}
+                      >
+                        <option value="">Select</option>
+                        {products.map((product) => (
+                          <option
+                            key={product.Item_Id}
+                            value={product.Item_Id}
+                          >
+                            {product.Name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div class="col-2">
@@ -258,7 +301,7 @@ const Sales = () => {
                         type="time"
                         className="form-control"
                         name="checkIn"
-                        value={productData.checkIn}
+                        value={formData.checkIn}
                         onChange={handleProductChange}
                       />
                     </div>
@@ -270,7 +313,7 @@ const Sales = () => {
                         type="time"
                         className="form-control"
                         name="checkOut"
-                        value={productData.checkOut}
+                        value={formData.checkOut}
                         onChange={handleProductChange}
                       />
                     </div>
@@ -282,7 +325,7 @@ const Sales = () => {
                         type="number"
                         className="form-control"
                         name="quantity"
-                        value={productData.quantity}
+                        value={formData.Quantity}
                         onChange={handleProductChange}
                       />
                     </div>
@@ -294,7 +337,7 @@ const Sales = () => {
                         type="number"
                         className="form-control"
                         name="rate"
-                        value={productData.rate}
+                        value={formData.Rate}
                         onChange={handleProductChange}
                       />
                     </div>
@@ -306,7 +349,7 @@ const Sales = () => {
                         type="number"
                         className="form-control"
                         name="amount"
-                        value={productData.amount}
+                        value={formData.amount}
                         onChange={handleProductChange}
                         onKeyDown={handleKeyDown}
                       />

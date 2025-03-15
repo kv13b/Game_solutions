@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
   // State to manage sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -13,6 +14,11 @@ const NavBar = () => {
 
   // Use useEffect to add/remove 'toggle-sidebar' class to body when the state changes
   useEffect(() => {
+    const storedUserName = sessionStorage.getItem("UserName");
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
+
     if (isSidebarOpen) {
       document.body.classList.add("toggle-sidebar");
     } else {
@@ -21,24 +27,24 @@ const NavBar = () => {
   }, [isSidebarOpen]); // Runs when `isSidebarOpen` changes
 
   const handleCustomer = () => {
-    navigate("/client");
+    navigate("/client", { replace: true });
   };
 
   const handleDashboard = () => {
-    navigate("/home");
+    navigate("/home", { replace: true });
   };
 
   const handleProduct = () => {
-    navigate("/Product");
+    navigate("/Product", { replace: true });
   };
   const handleSales = () => {
-    navigate("/Sales");
+    navigate("/Sales", { replace: true });
   };
   const handleReceipt = () => {
-    navigate("/Receipt");
+    navigate("/Receipt", { replace: true });
   };
-  const handleSignOut = () => {
-    navigate("/SignUp");
+  const handleSignOut = () => { 
+    navigate('/', { replace: true });
   };
 
   return (
@@ -72,7 +78,7 @@ const NavBar = () => {
               placeholder="Search"
               title="Enter search keyword"
             />
-            <button type="submit" title="Search">
+            <button type="button" title="Search">
               <i class="bi bi-search"></i>
             </button>
           </form>
@@ -87,10 +93,10 @@ const NavBar = () => {
             </li>
 
             <li class="nav-item dropdown">
-              <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+              {/* <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                 <i class="bi bi-bell"></i>
                 <span class="badge bg-primary badge-number">4</span>
-              </a>
+              </a> */}
 
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                 <li class="dropdown-header">
@@ -163,10 +169,10 @@ const NavBar = () => {
             </li>
 
             <li class="nav-item dropdown">
-              <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+              {/* <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-left-text"></i>
                 <span class="badge bg-success badge-number">3</span>
-              </a>
+              </a> */}
 
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
                 <li class="dropdown-header">
@@ -256,26 +262,26 @@ const NavBar = () => {
                 href="#"
                 data-bs-toggle="dropdown"
               >
-                <img
+                {/* <img
                   src="/img/profile-img.jpg"
                   alt="Profile"
                   class="rounded-circle"
-                />
+                /> */}
                 <span class="d-none d-md-block dropdown-toggle ps-2">
-                  K. Anderson
+                {userName}
                 </span>
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li class="dropdown-header">
-                  <h6>Kevin Anderson</h6>
-                  <span>Web Designer</span>
+                  <h6>Hi!</h6>
+                  <span>{userName}</span>
                 </li>
-                <li>
+                {/* <li>
                   <hr class="dropdown-divider" />
-                </li>
+                </li> */}
 
-                <li>
+                {/* <li>
                   <a
                     class="dropdown-item d-flex align-items-center"
                     href="users-profile.html"
@@ -283,12 +289,12 @@ const NavBar = () => {
                     <i class="bi bi-person"></i>
                     <span>My Profile</span>
                   </a>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <hr class="dropdown-divider" />
-                </li>
+                </li> */}
 
-                <li>
+                {/* <li>
                   <a
                     class="dropdown-item d-flex align-items-center"
                     href="users-profile.html"
@@ -296,12 +302,12 @@ const NavBar = () => {
                     <i class="bi bi-gear"></i>
                     <span>Account Settings</span>
                   </a>
-                </li>
+                </li> */}
                 <li>
                   <hr class="dropdown-divider" />
                 </li>
 
-                <li>
+                {/* <li>
                   <a
                     class="dropdown-item d-flex align-items-center"
                     href="pages-faq.html"
@@ -309,10 +315,10 @@ const NavBar = () => {
                     <i class="bi bi-question-circle"></i>
                     <span>Need Help?</span>
                   </a>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <hr class="dropdown-divider" />
-                </li>
+                </li> */}
 
                 <li>
                   <a

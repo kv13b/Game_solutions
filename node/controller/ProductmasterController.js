@@ -9,14 +9,14 @@ const Productinsert = async (req, res) => {
   }
 
   // Extract fields from request body
-  const { Name, Rate, CategoryId } = req.body;
+  const { Name, Rate, CategoryId,UserId } = req.body;
 
   try {
     // Insert Product data into database
     const [result] = await pool.query(
       `INSERT INTO product_master (Name,Rate,CategoryId, UserId, Entry_Date, recordstatus) 
-       VALUES (?,?,?, 1, NOW(), 1)`,
-      [Name, Rate, CategoryId]
+       VALUES (?,?,?, ?, NOW(), 1)`,
+      [Name, Rate, CategoryId,UserId]
     );
     if (result.affectedRows > 0) {
       console.log("Product insertion successful");
