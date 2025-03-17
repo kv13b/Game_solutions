@@ -1,6 +1,8 @@
-import mysql2 from "mysql2/promise";
-import dotenv from "dotenv";
+const mysql2 = require("mysql2/promise");
+const dotenv = require("dotenv");
+
 dotenv.config();
+
 const pool = mysql2.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -11,7 +13,7 @@ const pool = mysql2.createPool({
   queueLimit: 0,
   waitForConnections: true,
 });
-// Connecting to database shailesh
+
 const checkconnection = async () => {
   try {
     const connection = await pool.getConnection();
@@ -21,4 +23,5 @@ const checkconnection = async () => {
     console.log("error" + error);
   }
 };
-export { pool, checkconnection };
+
+module.exports = { pool, checkconnection };

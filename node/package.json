@@ -2,10 +2,27 @@
   "name": "node",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
+  "bin": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
+  },
+  "pkg": {
+    "scripts": [
+      "build/**/*.js"
+    ],
+    "targets": [
+      "node18-linux-x64",
+      "node18-macos-x64",
+      "node18-win-x64"
+    ],
+    "outputPath": "dist",
+    "assets": [
+      "./**/*.js",
+      "node_modules/**/*",
+      "views/**/*"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -19,6 +36,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.12.0",
     "nodemailer": "^6.10.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "pkg": "^5.8.1"
   }
 }

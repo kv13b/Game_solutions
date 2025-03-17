@@ -1,4 +1,4 @@
-import { pool } from "../connection.js";
+const { pool } = require("../connection");
 const Clientinsert = async (req, res) => {
   // Validate mandatory fields
   if (!req.body || !req.body.Name || !req.body.ContactNo || !req.body.Email) {
@@ -9,14 +9,14 @@ const Clientinsert = async (req, res) => {
   }
 
   // Extract fields from request body
-  const { Name, Address, ContactNo, Email,UserId } = req.body;
+  const { Name, Address, ContactNo, Email, UserId } = req.body;
 
   try {
     // Insert client data into database
     const [result] = await pool.query(
       `INSERT INTO client_master (Name, Address, ContactNo, Email, UserId, Entry_Date, recordstatus,CategoryId) 
        VALUES (?, ?, ?, ?, ?, NOW(), 1,1)`,
-      [Name, Address, ContactNo, Email,UserId],
+      [Name, Address, ContactNo, Email, UserId]
     );
     if (result.affectedRows > 0) {
       console.log("Client insertion successful");
@@ -114,4 +114,4 @@ const ClientUpdate = async (req, res) => {
     });
   }
 };
-export default { Clientinsert, getCustomer, ClientUpdate };
+module.exports = { Clientinsert, getCustomer, ClientUpdate };
