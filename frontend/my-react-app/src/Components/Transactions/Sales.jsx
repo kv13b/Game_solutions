@@ -21,21 +21,20 @@ const Sales = () => {
     Email: "",
     ContactNo: "",
   });
+  const [productForm, setProductForm] = useState({
+    product: "",
+    checkIn: "",
+    checkOut: "",
+    quantity: 0,
+    Rate: 0,
+    amount: 0,
+  });
   const [clients, setClients] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [gridData, setGridData] = useState([]);
 
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState("");
-
-  // const [productData, setProductData] = useState({
-  //   product: "",
-  //   checkIn: "",
-  //   checkOut: "",
-  //   quantity: "",
-  //   rate: "",
-  //   amount: "",
-  // });
- 
+  // const [selectedProduct, setSelectedProduct] = useState("");
 
   const fetchClients = async () => {
     try {
@@ -62,17 +61,40 @@ const Sales = () => {
     }
   };
 
+  const handleProChange = (e) => {
+    const { name, value } = e.target;
+
+    setProductForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleProductChange = (e) => {
-    const itemid = e.target.value;
-    setSelectedProduct(e.target.value);
-    const selectedProduct = products.find(
-      (product) => product.Item_Id.toString() === itemid
-    );
-    if (selectedProduct) {
-      setFormData({
-        Rate: selectedProduct.Rate, 
-      });
+    const itemId = e.target.value;
+
+    if (!products || products.length === 0) {
+      console.warn("Products are not defined or empty");
+      return;
     }
+    const selectedProduct = products.find(
+      (product) => product.Item_Id.toString() === itemId
+    );
+
+    if (selectedProduct) {
+      setProductForm((prev) => ({
+        ...prev,
+        product: itemId,
+        Rate: selectedProduct.Rate,
+        amount: selectedProduct.amount,
+      }));
+      console.log(productForm);
+    }
+  };
+
+  const handleCombinedChange = (e) => {
+    handleProChange(e);
+    handleProductChange(e);
   };
 
   const fetchProduct = async () => {
@@ -86,7 +108,7 @@ const Sales = () => {
     }
   };
 
-  const handleSubmit = () => { };
+  const handleSubmit = () => {};
   useEffect(() => {
     fetchClients();
     fetchProduct();
@@ -98,35 +120,83 @@ const Sales = () => {
     }));
   };
 
+  const handleQuantityAndRateChange = (e) => {
+    const { name, value } = e.target;
+
+    setProductForm((prev) => {
+      // Convert values to numbers htmlFor calculation
+      const quantity =
+        name === "quantity" ? Number(value) : Number(prev.quantity);
+      const rate = name === "Rate" ? Number(value) : Number(prev.Rate);
+
+      const updatedForm = {
+        ...prev,
+        [name]: value,
+        amount: !isNaN(quantity) && !isNaN(rate) ? quantity * rate : 0, // Calculate amount
+      };
+
+      return updatedForm;
+    });
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
 
-      const { product, checkIn, checkOut, quantity, rate, amount } =
-        productData;
+      const { product, checkIn, checkOut, quantity, Rate, amount } =
+        productForm;
 
-      if (!product || !checkIn || !checkOut || !quantity || !rate || !amount) {
+      if (!product || !checkIn || !checkOut || !quantity || !Rate || !amount) {
         alert("Please fill all product fields");
         return;
       }
-
+      console.log(products);
       // Add new row to grid
-      setProducts((prev) => [
+      // setProducts((prev) => [
+      //   ...prev,
+      //   {
+      //     id: crypto.randomUUID(),
+      //     product,
+      //     checkIn,
+      //     checkOut,
+      //     quantity,
+      //     Rate,
+      //     amount,
+      //   },
+      // ]);
+      setGridData((prev) => [
         ...prev,
-        { product, checkIn, checkOut, quantity, rate, amount },
+        {
+          id: crypto.randomUUID(),
+          product,
+          checkIn,
+          checkOut,
+          quantity,
+          Rate,
+          amount,
+        },
       ]);
 
+      console.log(gridData);
+
       // Clear product form after adding
-      setProductData({
+      setProductForm((prev) => ({
+        ...prev,
         product: "",
         checkIn: "",
         checkOut: "",
         quantity: "",
-        rate: "",
+        Rate: "",
         amount: "",
-      });
+      }));
+
+      // setSelectedProduct(""); // Reset product dropdown
     }
   };
+  useEffect(() => {
+    console.log("Updated gridData:", gridData);
+  }, [gridData]);
+
   const columnDefs = [
     { headerName: "Product", field: "product" },
     { headerName: "Check In", field: "checkIn" },
@@ -139,38 +209,44 @@ const Sales = () => {
     onGridReady: (params) => {
       // Automatically adjust the columns when the grid is ready
       params.api.sizeColumnsToFit();
-      params.api.getAllColumns().forEach((column) => {
-        column.getColDef().autoSize = true;
-      });
-      params.api.autoSizeColumns(params.columnApi.getAllColumns());
+
+      // Use params.columnApi.getAllColumns() instead of params.api.getAllColumns()
+      const allColumns = params.columnApi.getAllColumns();
+
+      if (allColumns) {
+        allColumns.forEach((column) => {
+          params.columnApi.autoSizeColumn(column.getColId());
+        });
+      }
     },
   };
+
   return (
     <div className="container">
       <NavBar />
-      <main id="main" class="main">
-        <div class="pagetitle">
+      <main id="main" className="main">
+        <div className="pagetitle">
           <h1>Sales</h1>
           <nav>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
                 <a href="#">Transactions</a>
               </li>
-              <li class="breadcrumb-item active">Sales</li>
+              <li className="breadcrumb-item active">Sales</li>
             </ol>
           </nav>
         </div>
 
-        <section class="section">
-          <div class="row">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Sales Entry</h5>
+        <section className="section">
+          <div className="row">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Sales Entry</h5>
 
-                <form class="row g-3" onSubmit={handleSubmit}>
-                  <div class="row mb-3">
-                    <div class="col-md-3">
-                      <label for="inputState" class="form-label">
+                <form className="row g-3" onSubmit={handleSubmit}>
+                  <div className="row mb-3">
+                    <div className="col-md-3">
+                      <label htmlFor="inputState" className="form-label">
                         Customer
                       </label>
                       <select
@@ -190,8 +266,8 @@ const Sales = () => {
                         ))}
                       </select>
                     </div>
-                    <div class="col-md-3">
-                      <label for="inputState" class="form-label">
+                    <div className="col-md-3">
+                      <label htmlFor="inputState" className="form-label">
                         Email
                       </label>
                       <input
@@ -204,8 +280,8 @@ const Sales = () => {
                         readOnly
                       />
                     </div>
-                    <div class="col-md-2">
-                      <label for="inputState" class="form-label">
+                    <div className="col-md-2">
+                      <label htmlFor="inputState" className="form-label">
                         Contact No
                       </label>
                       <input
@@ -219,21 +295,22 @@ const Sales = () => {
                         readOnly
                       />
                     </div>
-                    <div class="col-md-2">
-                      <label for="inputState" class="form-label">
+                    <div className="col-md-2">
+                      <label htmlFor="inputState" className="form-label">
                         Balance
                       </label>
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         value="0.00"
                         disabled
                       />
                     </div>
-                    <div class="col-md-1">
-                      <label htmlFor="inputState" className="form-label">
-
-                      </label>
+                    <div className="col-md-1">
+                      <label
+                        htmlFor="inputState"
+                        className="form-label"
+                      ></label>
                       <div>
                         <button
                           type="button"
@@ -244,10 +321,11 @@ const Sales = () => {
                         </button>
                       </div>
                     </div>
-                    <div class="col-md-1">
-                      <label htmlFor="inputState" className="form-label">
-
-                      </label>
+                    <div className="col-md-1">
+                      <label
+                        htmlFor="inputState"
+                        className="form-label"
+                      ></label>
                       <div>
                         <button type="button" className="btn btn-outline-info">
                           View
@@ -256,36 +334,23 @@ const Sales = () => {
                     </div>
                   </div>
 
-                  <div class="row mb-3">
-                    <div class="col-2">
-                      <label for="inputNanme4" class="form-label">
+                  <div className="row mb-3">
+                    <div className="col-2">
+                      <label htmlFor="inputNanme4" className="form-label">
                         Product
                       </label>
-                      {/* <select
-                        id="inputState"
-                        className="form-select"
-                        name="product"
-                        value={productData.product}
-                        onChange={handleProductChange}
-                      >
-                        <option value="">Select</option>
-                        <option value="Pool 1">Pool 1</option>
-                        <option value="Pool 2">Pool 2</option>
-                        <option value="Play Station 1">Play Station 1</option>
-                        <option value="Juice">Juice</option>
-                        <option value="Burger">Burger</option>
-                      </select> */}
 
                       <select
                         id="inputState"
                         className="form-select"
-                        value={selectedProduct}
-                        onChange={handleProductChange}
+                        name="product"
+                        value={productForm.product || ""}
+                        onChange={handleCombinedChange}
                       >
                         <option value="">Select</option>
-                        {products.map((product) => (
+                        {products.map((product, index) => (
                           <option
-                            key={product.Item_Id}
+                            key={product.Item_Id ?? index}
                             value={product.Item_Id}
                           >
                             {product.Name}
@@ -293,75 +358,75 @@ const Sales = () => {
                         ))}
                       </select>
                     </div>
-                    <div class="col-2">
-                      <label for="inputTime" class="form-label">
+                    <div className="col-2">
+                      <label htmlFor="inputTime" className="form-label">
                         Check In
                       </label>
                       <input
                         type="time"
                         className="form-control"
                         name="checkIn"
-                        value={formData.checkIn}
-                        onChange={handleProductChange}
+                        value={productForm.checkIn || ""}
+                        onChange={handleCombinedChange}
                       />
                     </div>
-                    <div class="col-2">
-                      <label for="inputTime" class="form-label">
+                    <div className="col-2">
+                      <label htmlFor="inputTime" className="form-label">
                         Check Out
                       </label>
                       <input
                         type="time"
                         className="form-control"
                         name="checkOut"
-                        value={formData.checkOut}
-                        onChange={handleProductChange}
+                        value={productForm.checkOut || ""}
+                        onChange={handleCombinedChange}
                       />
                     </div>
-                    <div class="col-2">
-                      <label for="inputNanme4" class="form-label">
+                    <div className="col-2">
+                      <label htmlFor="inputNanme4" className="form-label">
                         Quantity
                       </label>
                       <input
                         type="number"
                         className="form-control"
                         name="quantity"
-                        value={formData.Quantity}
-                        onChange={handleProductChange}
+                        value={productForm.quantity}
+                        onChange={handleQuantityAndRateChange}
                       />
                     </div>
-                    <div class="col-2">
-                      <label for="inputNanme4" class="form-label">
+                    <div className="col-2">
+                      <label htmlFor="inputNanme4" className="form-label">
                         Rate
                       </label>
                       <input
                         type="number"
                         className="form-control"
-                        name="rate"
-                        value={formData.Rate}
-                        onChange={handleProductChange}
+                        name="Rate"
+                        value={productForm.Rate}
+                        onChange={handleQuantityAndRateChange}
                       />
                     </div>
-                    <div class="col-2">
-                      <label for="inputNanme4" class="form-label">
+                    <div className="col-2">
+                      <label htmlFor="inputNanme4" className="form-label">
                         Amount
                       </label>
                       <input
                         type="number"
                         className="form-control"
                         name="amount"
-                        value={formData.amount}
+                        value={productForm.amount}
                         onChange={handleProductChange}
                         onKeyDown={handleKeyDown}
                       />
                     </div>
                     <div>
-                      {/* <AgGridReact
-                        rowData={products}
+                      <AgGridReact
+                        key={gridData.length} // React will re-render the grid when gridData changes
+                        rowData={gridData}
                         columnDefs={columnDefs}
-                        gridOptions={gridOptions}
+                        // gridOptions={gridOptions}
                         // onRowDoubleClicked={handleRowClick}
-                        modules={[ClientSideRowModelModule]}
-                      /> */}
+                      />
                     </div>
                   </div>
 
