@@ -2,10 +2,6 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "http://localhost:3003/"
-    },
-    {
-      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
