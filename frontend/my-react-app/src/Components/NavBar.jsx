@@ -31,7 +31,7 @@ const NavBar = () => {
   };
 
   const handleDashboard = () => {
-     navigate("/Product", { replace: true });
+    navigate("/client", { replace: true });
   };
 
   const handleProduct = () => {
