@@ -71,7 +71,7 @@ const SignIn = () => {
         console.log(sessionStorage.getItem("UserName"));
         setEmail("");
         setPassword("");  
-        navigate('/home', { replace: true });
+        navigate('/client', { replace: true });
       } else {
         toast.error(response.data.message);
         setPassword("");
