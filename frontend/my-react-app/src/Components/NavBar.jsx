@@ -63,8 +63,8 @@ const NavBar = () => {
             onClick={handleDashboard}
             className="logo d-flex align-items-center"
           >
-            {/* <img src="/img/logo.png" alt="" /> */}
-            <span className="d-none d-lg-block">ABC</span>
+            <img src="/img/logo.png" alt="" />
+            <span className="d-none d-lg-block">Cheat Codes</span>
           </a>
           <i
             className="bi bi-list toggle-sidebar-btn"
