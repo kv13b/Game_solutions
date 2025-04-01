@@ -91,8 +91,8 @@ const SignIn = () => {
               <div className="card mb-3">
                 <div className="row g-0">
                   <div className="col-md-6">
-                    {/* <img src="img/logo.png" className="img-fluid rounded-start" alt="Card Image" /> */}
-                    <img src="/tabicon1.jpeg" className="img-fluid rounded-start" alt="Card Image" />
+                    <img src="img/logo.png" className="img-fluid rounded-start" alt="Card Image" />
+{/*                     <img src="/tabicon1.jpeg" className="img-fluid rounded-start" alt="Card Image" /> */}
                   </div>
                   <div className="col-md-6">
                     <div className="card-body">
