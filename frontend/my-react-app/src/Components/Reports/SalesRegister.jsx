@@ -217,7 +217,7 @@ const GetSalesRegister = () => {
         const toDate = formData.todate;
         const emailSubject = `Sales Register   ${fromDate}   ${toDate}`;
         const emailData = {
-            to: "shailu580@gmail.com,karthikbhatt13@gmail.com", // The recipient's email
+            to: "Akshay.amin3@gmail.com,Nehasshetty0037@gmail.com", // The recipient's email
             subject: emailSubject,
             body: emailContent,
         };
