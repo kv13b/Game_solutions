@@ -248,7 +248,7 @@ const Sales = () => {
           checkIn,
           checkOut,
           quantity: Number(quantity),
-          Rate,
+          Rate:Number(Rate),
           amount,
         },
       ]);
