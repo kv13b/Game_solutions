@@ -743,7 +743,7 @@ const Sales = () => {
                         value={productForm.Rate}
                         ref={rateInputRef}
                         onKeyDown={handleKeyDownQuantity}
-                        // onChange={handleQuantityAndRateChange}
+                         onChange={handleQuantityAndRateChange}
                       />
                     </div>
                     <div className="col-2">
