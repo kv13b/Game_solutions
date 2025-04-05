@@ -46,6 +46,9 @@ const NavBar = () => {
   const handleSalesRegister = () => {
     navigate("/SalesRegister", { replace: true });
   };
+  const handleCategoryWise = () => {
+    navigate("/CategoryWise", { replace: true });
+  };
   const handleSignOut = () => {
     navigate("/", { replace: true });
   };
@@ -439,13 +442,13 @@ const NavBar = () => {
                   <span>Sales Register</span>
                 </a>
               </li>
-              {/* <li>
-                <a href="charts-chartjs.html">
+              <li>
+                <a href="#" onClick={handleCategoryWise}>
                   <i className="bi bi-circle"></i>
-                  <span>Customer Register</span>
+                  <span>Category Wise</span>
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="charts-echarts.html">
                   <i className="bi bi-circle"></i>
                   <span>Product Register</span>
