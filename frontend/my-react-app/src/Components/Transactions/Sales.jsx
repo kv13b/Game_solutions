@@ -417,6 +417,15 @@ const Sales = () => {
         toast.error("Rate must be greater than 0");
       }
     }
+     if (e.key === "Enter" && e.target.name === "cash") {
+      e.preventDefault();
+    }
+    if (e.key === "Enter" && e.target.name === "upi") {
+      e.preventDefault();
+    }
+    if (e.key === "Enter" && e.target.name === "credit") {
+      e.preventDefault();
+    }
   };
   const handleMainSubmit = async (e) => {
     e.preventDefault(); // Prevent form default submission
