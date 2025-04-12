@@ -795,6 +795,7 @@ const Sales = () => {
                       name="cash"
                       value={AmountForm.cash}
                       onChange={handleAmountChange}
+                      onKeyDown={handleKeyDownQuantity}
                     />
                   </div>
                   <div className="col-2">
@@ -805,6 +806,7 @@ const Sales = () => {
                       name="upi"
                       value={AmountForm.upi}
                       onChange={handleAmountChange}
+                      onKeyDown={handleKeyDownQuantity}
                     />
                   </div>
                   <div className="col-2">
@@ -815,6 +817,7 @@ const Sales = () => {
                       name="credit"
                       value={AmountForm.credit}
                       onChange={handleAmountChange}
+                      onKeyDown={handleKeyDownQuantity}
                     />
                   </div>
                   <div className="col-6" style={{ textAlign: "right" }}>
